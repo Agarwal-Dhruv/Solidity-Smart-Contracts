@@ -1,22 +1,37 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
+
+interface IAntiBot{
+
+    function setAntiBotTimer(uint256 timer_) external;
+
+    function setAntiBotEnabled(bool enabled_) external;
+
+    function antiBotEndTime() external view returns(uint);
+
+    function antiBotEnabled() external view returns(bool);
+
+    function blacklistAddress(address address_) external;
+
+    function removeBlacklistedAddress(address address_) external;
+
+    function checkAddress(address address_) external view returns(bool);
+}
+
 contract AntiBot {
 
-    uint256 public _antiBotEndTime;
-    bool public _antiBotEnabled;
+    uint256 private _antiBotEndTime;
+    bool private _antiBotEnabled;
 
     mapping(address => bool) public _isBlacklisted;
 
     function setAntiBotTimer(uint256 timer_) public {
-        require(antiBotEnabled(), "Anti-Bot Not Activated");
-        require(block.timestamp < antiBotEndTime(), "Already in Anti-Bot Time");
-        timer_ = block.timestamp + timer_;
-        _antiBotEndTime = timer_;
+        require(antiBotEnabled(), "Anti-Bot not Activated");
+        _antiBotEndTime = block.timestamp + timer_;
     }
 
     function setAntiBotEnabled(bool enabled_) public {
-        require(!_antiBotEnabled, "Anti-Bot Already Activated");
         _antiBotEnabled = enabled_;
     }
 
